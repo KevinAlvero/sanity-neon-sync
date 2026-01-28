@@ -24,12 +24,12 @@ Neon PostgreSQL: Menyimpan data backup dalam bentuk JSONB
 ENVIRONMENT VARIABLES
 Project ini membutuhkan environment variable sebagai berikut: 
 
--DATABSE_URL=postgresql://....
--SANTIY_TOKEN=sk...
+DATABSE_URL=postgresql://....  &  SANTIY_TOKEN=sk...
 
 Cara Menjalankan Backup:
 - Akses endpoint melalui link deployment vercel dan tambahkan /api/sync
 - Response sukses : 
+
 {
     "ok":true,
     "sync":total_data
