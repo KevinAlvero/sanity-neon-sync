@@ -1,21 +1,28 @@
-import { neon } from "@neondatabase/serverless";
-
-const sql = neon(process.env.DATABASE_URL!);
-
 export async function GET() {
-  const res = await fetch(
-    "https://3l9bn3l1.api.sanity.io/v2023-10-01/data/query/production?query=*",
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.SANITY_TOKEN}`,
-      },
+  try {
+    const res = await fetch(
+      "https://3l9bn3l1.api.sanity.io/v2023-10-01/data/query/production?query=*",
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.SANITY_TOKEN}`,
+        },
+      }
+    );
+
+    const json = await res.json();
+
+    console.log("FULL RESPONSE:", json);
+    console.log("RESULT TYPE:", typeof json.result);
+    console.log("IS ARRAY:", Array.isArray(json.result));
+
+    if (!Array.isArray(json.result)) {
+      return Response.json(
+        { error: "Sanity result is not an array", json },
+        { status: 500 }
+      );
     }
-  );
 
-  const { result } = await res.json();
-
-  for (const doc of result) {
-    try {
+    for (const doc of json.result) {
       await sql`
         INSERT INTO sanity_documents (id, type, created_at, updated_at, rev, data)
         VALUES (
@@ -32,10 +39,14 @@ export async function GET() {
           updated_at = EXCLUDED.updated_at,
           rev = EXCLUDED.rev;
       `;
-    } catch (err) {
-      console.error("Sync failed for", doc._id, err);
     }
-  }
 
-  return Response.json({ synced: result.length });
+    return Response.json({ ok: true });
+  } catch (err: any) {
+    console.error("SYNC ERROR:", err);
+    return Response.json(
+      { error: err.message },
+      { status: 500 }
+    );
+  }
 }
