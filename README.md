@@ -15,13 +15,7 @@ TUJUAN UTAMA
 - Memungkinkan query data langsung via PostgreSQL
 
 CARA KERJA
-Santiy CSM 
-    | (API Fetch)
-    v
-Vercel API Route (/api/sync)
-    | (sinkronisasi)
-    v
-Neon PostgreSQL (sanity_document)
+Santiy CSM  (API Fetch) -> Vercel API Route (/api/sync) (sinkronisasi) -> Neon PostgreSQL (sanity_document)
 
 Sanity CMS: Sumber data utama (content management)
 Vercel: Untuk menjalankan API Endpoint untuk proses sinkronisasi
@@ -30,8 +24,8 @@ Neon PostgreSQL: Menyimpan data backup dalam bentuk JSONB
 ENVIRONMENT VARIABLES
 Project ini membutuhkan environment variable sebagai berikut: 
 
-DATABSE_URL=postgresql://....
-SANTIY_TOKEN=sk...
+-DATABSE_URL=postgresql://....
+-SANTIY_TOKEN=sk...
 
 Cara Menjalankan Backup:
 - Akses endpoint melalui link deployment vercel dan tambahkan /api/sync
